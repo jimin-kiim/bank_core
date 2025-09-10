@@ -1,7 +1,7 @@
 package org.example.controller;
 
 import org.example.domain.*;
-import org.example.messagaes.ErrorMessage;
+import org.example.messages.ErrorMessage;
 
 import java.util.List;
 import java.util.Scanner;
