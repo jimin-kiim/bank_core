@@ -35,11 +35,7 @@ public class ProgramController {
         } else if (input == 2) {
             createNewCustomer();
         } else if (input == 3) {
-            while (true) {
-                int result = chooseUser();
-                if (result != -1) {
-                    break;
-                }
+            while (chooseUser() == -1) {
             }
             if (currentUser == null) {
                 return;
@@ -119,7 +115,7 @@ public class ProgramController {
     private void showBankAccountMenu(String type) {
         System.out.println("==============================");
         System.out.println("======  새 계좌를 개설합니다 =======");
-        System.out.println("설할 계좌 타입을 선택해 주세요.");
+        System.out.println("개설할 계좌 타입을 선택해 주세요.");
         System.out.println("0. 계좌 개설 중단");
         System.out.println("1. 입출금 계좌");
         System.out.println("2. 적금 계좌");
