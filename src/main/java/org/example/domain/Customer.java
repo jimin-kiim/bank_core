@@ -1,5 +1,7 @@
 package org.example.domain;
 
+import org.example.constants.Type;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,11 +44,11 @@ public class Customer {
 
     private void setType() {
         if (age <= 13) {
-            type = "KID";
+            type = Type.KID.getValue();
         } else if (age <= 18) {
-            type = "Teenager";
+            type = Type.TEENAGER.getValue();
         } else {
-            type = "ADULT";
+            type = Type.ADULT.getValue();
         }
     }
 

@@ -1,5 +1,6 @@
 package org.example.controller;
 
+import org.example.constants.Type;
 import org.example.domain.*;
 import org.example.messages.ErrorMessage;
 
@@ -93,7 +94,7 @@ public class ProgramController {
             if (input == 0) {
                 System.out.println("계좌 개설을 중단합니다.");
                 return null;
-            } else if ((type == "KID" && input > 2 )|| (type == "TEEN" && input > 3) || (type == "ADULT" && input > 4 )) {
+            } else if ((type.equals(Type.KID.getValue()) && input > 2 )|| (type.equals(Type.TEENAGER.getValue()) && input > 3) || (type.equals(Type.ADULT.getValue()) && input > 4 )) {
                 System.out.println(ErrorMessage.INVALID_INPUT.getMessage());
                 continue;
             }
