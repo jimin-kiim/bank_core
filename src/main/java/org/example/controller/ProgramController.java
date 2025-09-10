@@ -10,6 +10,7 @@ import java.util.Scanner;
 public class ProgramController {
     private Bank bank;
     private Customer currentUser;
+    private final Scanner sc = new Scanner(System.in);
 
     public ProgramController() {
         bank = new Bank();
@@ -121,22 +122,16 @@ public class ProgramController {
         String input;
         while (true) {
             try {
-                Scanner sc = new Scanner(System.in);
                 input = sc.next();
-//                Validator.validateIsInt(input);
-                break;
+                return Integer.parseInt(input);
             } catch (IllegalArgumentException e) {
                 System.out.println(ErrorMessage.INVALID_INPUT.getMessage());
             }
         }
-        return Integer.parseInt(input);
     }
 
     private String getUserStringInput() {
-        String input;
-        Scanner sc = new Scanner(System.in);
-        input = sc.next();
-        return input;
+        return sc.next();
     }
 
     private void showMenu() {
