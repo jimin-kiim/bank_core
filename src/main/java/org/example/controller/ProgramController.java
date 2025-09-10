@@ -134,11 +134,8 @@ public class ProgramController {
 
     private String getUserStringInput() {
         String input;
-        while (true) {
-            Scanner sc = new Scanner(System.in);
-            input = sc.next();
-            break;
-        }
+        Scanner sc = new Scanner(System.in);
+        input = sc.next();
         return input;
     }
 
