@@ -74,21 +74,8 @@ public class ProgramController {
     }
 
     private BankAccount createNewBankAccount() {
-        System.out.println("==============================");
-        System.out.println("======  새 계좌를 개설합니다 =======");
-        System.out.println("계설할 계좌 타입을 선택해 주세요.");
-        System.out.println("0. 계좌 개설 중단");
-        System.out.println("1. 입출금 계좌");
-        System.out.println("2. 적금 계좌");
         String type = currentUser.getType();
-        if (type != "KID") {
-            System.out.println("3. 연금 계좌");
-        }
-        if (type == "ADULT") {
-            System.out.println("4. 증권 계좌");
-        }
-        System.out.println("==============================");
-        System.out.println("실행할 메뉴를 선택해 주세요");
+        showBankAccountMenu(type);
         while (true) {
             int input = getUserInput();
             if (input == 0) {
@@ -119,6 +106,24 @@ public class ProgramController {
                 return securities;
             }
         }
+    }
+
+    private void showBankAccountMenu(String type) {
+        System.out.println("==============================");
+        System.out.println("======  새 계좌를 개설합니다 =======");
+        System.out.println("계설할 계좌 타입을 선택해 주세요.");
+        System.out.println("0. 계좌 개설 중단");
+        System.out.println("1. 입출금 계좌");
+        System.out.println("2. 적금 계좌");
+
+        if (!type.equals(Type.KID.getValue())) {
+            System.out.println("3. 연금 계좌");
+        }
+        if (type.equals(Type.ADULT.getValue())) {
+            System.out.println("4. 증권 계좌");
+        }
+        System.out.println("==============================");
+        System.out.println("실행할 메뉴를 선택해 주세요");
     }
 
     private Integer getUserInput() {
