@@ -40,7 +40,9 @@ public class ProgramController {
                 int userServiceInput = getUserInput();
                 if (userServiceInput == 1) {
                     BankAccount bankAccount = createNewBankAccount();
-                    currentUser.addNewBankAccount(bankAccount);
+                    if (createNewBankAccount() != null) {
+                        currentUser.addNewBankAccount(bankAccount);
+                    }
                 } else if (userServiceInput == 2) {
                     viewBankAccountList();
                 } else if (userServiceInput == 3) {
