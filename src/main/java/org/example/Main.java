@@ -1,7 +1,10 @@
 package org.example;
 
+import org.example.domain.ProgramController;
+
 public class Main {
     public static void main(String[] args) {
-        System.out.println("Hello world!");
+        ProgramController program = new ProgramController();
+        program.startProgram();
     }
 }
