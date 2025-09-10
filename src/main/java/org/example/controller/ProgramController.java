@@ -35,13 +35,21 @@ public class ProgramController {
         } else if (input == 2) {
             createNewCustomer();
         } else if (input == 3) {
-            chooseUser();
+            while (true) {
+                int result = chooseUser();
+                if (result != -1) {
+                    break;
+                }
+            }
+            if (currentUser == null) {
+                return;
+            }
             while (true) {
                 showUserServiceMenu();
                 int userServiceInput = getUserInput();
                 if (userServiceInput == 1) {
                     BankAccount bankAccount = createNewBankAccount();
-                    if (createNewBankAccount() != null) {
+                    if (bankAccount != null) {
                         currentUser.addNewBankAccount(bankAccount);
                     }
                 } else if (userServiceInput == 2) {
@@ -111,7 +119,7 @@ public class ProgramController {
     private void showBankAccountMenu(String type) {
         System.out.println("==============================");
         System.out.println("======  새 계좌를 개설합니다 =======");
-        System.out.println("개설할 계좌 타입을 선택해 주세요.");
+        System.out.println("설할 계좌 타입을 선택해 주세요.");
         System.out.println("0. 계좌 개설 중단");
         System.out.println("1. 입출금 계좌");
         System.out.println("2. 적금 계좌");
@@ -152,7 +160,7 @@ public class ProgramController {
         System.out.println("실행할 메뉴를 선택해 주세요");
     }
 
-    private void chooseUser() {
+    private int chooseUser() {
         List<Customer> customerList = Bank.getCustomerList();
         System.out.println("==============================");
         System.out.println("  id     이름");
@@ -161,17 +169,26 @@ public class ProgramController {
         }
         System.out.println("==============================");
         System.out.println("고객 id를 입력해주세요");
-        int currentUserId = getUserInput();
+        System.out.println("0 입력 시 고객 계정 접속 종료");
+        int input = getUserInput();
+        if (input == 0) {
+            System.out.println("접속 고객 선택을 종료합니다");
+            return 0;
+        }
         for (int i = 0; i < customerList.size(); i++) {
-            if (customerList.get(i).getId() == currentUserId) {
+            if (customerList.get(i).getId() == input) {
                 currentUser = customerList.get(i);
-                return;
+                return 0;
             }
         }
+        System.out.println("유효하지 않은 입력 값입니다.");
+        return -1;
     }
 
     private void showUserServiceMenu() {
         System.out.println("==============================");
+        System.out.println(currentUser.getName() +"님 안녕하세요.");
+        System.out.println("이용할 서비스를 선택해주세요.");
         System.out.println("1. 새 계좌 개설 ");
         System.out.println("2. 계좌 리스트 확인");
         System.out.println("3. 이용할 계좌 선택");
