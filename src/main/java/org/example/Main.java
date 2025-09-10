@@ -1,6 +1,6 @@
 package org.example;
 
-import org.example.domain.ProgramController;
+import org.example.controller.ProgramController;
 
 public class Main {
     public static void main(String[] args) {

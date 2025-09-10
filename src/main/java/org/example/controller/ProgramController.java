@@ -1,5 +1,6 @@
-package org.example.domain;
+package org.example.controller;
 
+import org.example.domain.*;
 import org.example.messagaes.ErrorMessage;
 
 import java.util.List;
