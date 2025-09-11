@@ -94,6 +94,22 @@ public class ProgramController {
         return 0;
     }
 
+    private void pay() {
+        System.out.println("==============================");
+        System.out.println("두 건의 결제를 동시 진행합니다.");
+        System.out.println("한 건의 결제 가격을 먼저 입력해주세요.");
+        int price1 = getUserIntegerInput();
+        System.out.println("그 다음 건의 결제 가격을 입력해주세요.");
+        int price2 = getUserIntegerInput();
+
+        Thread payment1 = new Thread(() -> currentBankAccount.pay(price1));
+        Thread payment2 = new Thread(() -> currentBankAccount.pay(price2));
+
+        payment1.start();
+        payment2.start();
+    }
+
+
     private void deposit() {
         System.out.println("==============================");
         System.out.println("보유 잔액: " + currentBankAccount.getBalance());
