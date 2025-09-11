@@ -1,5 +1,7 @@
 package org.example.domain;
 
+import org.example.messages.ErrorMessage;
+
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -50,7 +52,7 @@ public class BankAccount {
         lock.lock();
         try {
             if (withdrawalAmount > balance) {
-                throw new IllegalArgumentException();
+                throw new IllegalArgumentException(ErrorMessage.LIMIT_EXCEEDED.getMessage());
             }
             this.balance -= withdrawalAmount;
         } finally {

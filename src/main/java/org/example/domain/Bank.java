@@ -9,6 +9,7 @@ public class Bank {
 
     public Bank() {
         customerList = new ArrayList<>();
+        bankAccountList = new ArrayList<>();
     }
     public static List<Customer> getCustomerList() {
         return customerList;

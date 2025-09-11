@@ -155,14 +155,24 @@ public class ProgramController {
         }
         System.out.println("==============================");
         System.out.println("송금할 계좌의 계좌 번호를 입력해주세요.");
+        System.out.println("0 입력 시 계좌 접속 종료");
         int bankAccountNumber = getUserIntegerInput();
+        if (bankAccountNumber == 0) {
+            System.out.println("이체를 취소합니다");
+            return;
+        }
         BankAccount remittanceDestination = bankAccountList.stream().filter(bankAccount -> bankAccount.getBankAccountNumber() == bankAccountNumber).findFirst().orElse(null);
         if (remittanceDestination == null) {
             System.out.println("잘못된 계좌 번호로 이체를 취소합니다.");
             return;
         }
         System.out.println(bankAccountNumber + "으로 송금할 금액을 입력해주세요.");
+        System.out.println("0 입력 시 계좌 접속 종료");
         int remittanceAmount = getUserIntegerInput();
+        if (remittanceAmount == 0) {
+            System.out.println("이체를 취소합니다");
+            return;
+        }
 //        int balance = currentBankAccount.getBalance();
 //        if (remittanceAmount > balance) {
 //            System.out.println("잔액이 부족해 이체를 취소합니다.");
@@ -198,7 +208,7 @@ public class ProgramController {
             }
 
             System.out.println("별칭을 입력해 주세요");
-            String alias = getUserStringInput();
+            String alias = sc.next();
             int bankAccountNumber = bank.getBankAccountList().size() + 1;
             if (input == 1) {
                 Checking checking =  new Checking(bankAccountNumber);
@@ -289,16 +299,13 @@ public class ProgramController {
         String input;
         while (true) {
             try {
+                if (!sc.hasNextInt()) { System.err.println("필요한 정수 입력 없음"); return -1; }
                 input = sc.next();
                 return Integer.parseInt(input);
             } catch (IllegalArgumentException e) {
                 System.out.println(ErrorMessage.INVALID_INPUT.getMessage());
             }
         }
-    }
-
-    private String getUserStringInput() {
-        return sc.next();
     }
 
     private void showMenu() {
@@ -358,7 +365,7 @@ public class ProgramController {
         System.out.println("==============================");
         System.out.println("새 고객 정보를 등록합니다.");
         System.out.println("고객 이름을 입력해주세요");
-        String name = getUserStringInput();
+        String name = sc.next();
         System.out.println("고객 나이를 입력해주세요");
         int age = getUserIntegerInput();
         customer.setName(name);
