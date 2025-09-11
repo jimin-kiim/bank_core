@@ -11,6 +11,7 @@ import java.util.Scanner;
 public class ProgramController {
     private Bank bank;
     private Customer currentUser;
+    private BankAccount currentBankAccount;
     private final Scanner sc = new Scanner(System.in);
 
     public ProgramController() {
@@ -61,6 +62,34 @@ public class ProgramController {
     }
 
     private void chooseBankAccount() {
+        while (true) {
+            List<BankAccount> bankAccountList = currentUser.getBankAccountList();
+            if (bankAccountList.size() == 0) {
+                System.out.println("이용할 수 있는 계좌가 없습니다.");
+                System.out.println("계좌를 먼저 개설해 주세요.");
+                return;
+            }
+            System.out.println("==============================");
+            System.out.println("  계좌번호     계좌명");
+            for (BankAccount bankAccount : bankAccountList) {
+                System.out.println("" + bankAccount.getBankAccountNumber() + "    " + bankAccount.getAlias());
+            }
+            System.out.println("==============================");
+            System.out.println("계좌 번호를 입력해주세요");
+            System.out.println("0 입력 시 계좌 접속 종료");
+            int input = getUserInput();
+            if (input == 0) {
+                System.out.println("이용 계좌 선택을 종료합니다");
+                return;
+            }
+            for (int i = 0; i < bankAccountList.size(); i++) {
+                if (bankAccountList.get(i).getBankAccountNumber() == input) {
+                    currentBankAccount = bankAccountList.get(i);
+                    return;
+                }
+            }
+            System.out.println("유효하지 않은 입력 값입니다.");
+        }
     }
 
     private void viewBankAccountList() {
