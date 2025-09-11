@@ -100,7 +100,7 @@ public class ProgramController {
         System.out.println("입금할 금액을 입력해주세요.");
         int depositAmount = getUserIntegerInput();
 
-        try { // 임계 영역
+        try {
             System.out.println("입금 중");
             Thread.sleep(2000);
             currentBankAccount.increaseBalance(depositAmount);
@@ -115,18 +115,9 @@ public class ProgramController {
         System.out.println("==============================");
         int balance = currentBankAccount.getBalance();
         System.out.println("출금 가능 잔액: " + balance);
-        if (balance <= 0) {
-            System.out.println("잔액이 0원으로 출금을 진행할 수 없어 출금 진행을 중단합니다.");
-            return;
-        }
 
         System.out.println("출금할 금액을 입력해주세요.");
         int withdrawalAmount = getUserIntegerInput();
-
-//        if (withdrawalAmount > balance) {
-//            System.out.println("잔액이 부족해 출금 진행을 중단합니다.");
-//            return;
-//        }
 
         try {
             System.out.println("출금 중");
@@ -177,14 +168,10 @@ public class ProgramController {
         try {
             System.out.println("이체 중");
             Thread.sleep(2000);
-//            Thread remmittance = new Thread(() -> currentBankAccount.decreaseBalance(remittanceAmount));
-//            Thread remmittanceDestination = new Thread(() -> remittanceDestination.increaseBalance(remittanceAmount));
 
             if (currentBankAccount.decreaseBalance(remittanceAmount)) {
                 remittanceDestination.increaseBalance(remittanceAmount);
             }
-//            remmittance.start();
-//            remmittanceDestination.start();
 
             System.out.println("이체 완료");
             System.out.println("이체 후 잔액: " + currentBankAccount.getBalance());
