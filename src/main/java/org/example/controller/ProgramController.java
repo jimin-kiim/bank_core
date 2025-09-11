@@ -3,6 +3,7 @@ package org.example.controller;
 import org.example.constants.Type;
 import org.example.domain.*;
 import org.example.messages.ErrorMessage;
+import org.example.view.OutputView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -72,15 +73,7 @@ public class ProgramController {
     }
 
     private void showBankAccountServiceMenu() {
-        System.out.println("==============================");
-        System.out.println(currentBankAccount.getAlias() + "계좌 서비스입니다. ");
-        System.out.println("1. 입금");
-        System.out.println("2. 출금");
-        System.out.println("3. 이체");
-        System.out.println("4. 결제");
-        System.out.println("5. 프로그램 종료");
-        System.out.println("==============================");
-        System.out.println("실행할 메뉴를 선택해 주세요");
+       OutputView.printBankAccountServiceMenu(currentBankAccount.getAlias());
     }
 
     private int selectBankAccountServiceMenu() {
@@ -100,22 +93,6 @@ public class ProgramController {
         }
         return 0;
     }
-
-    private void pay() {
-        System.out.println("==============================");
-        System.out.println("두 건의 결제를 동시 진행합니다.");
-        System.out.println("한 건의 결제 가격을 먼저 입력해주세요.");
-        int price1 = getUserIntegerInput();
-        System.out.println("그 다음 건의 결제 가격을 입력해주세요.");
-        int price2 = getUserIntegerInput();
-
-        Thread payment1 = new Thread(() -> currentBankAccount.pay(price1));
-        Thread payment2 = new Thread(() -> currentBankAccount.pay(price2));
-
-        payment1.start();
-        payment2.start();
-    }
-
 
     private void deposit() {
         System.out.println("==============================");
@@ -203,6 +180,21 @@ public class ProgramController {
         }
     }
 
+    private void pay() {
+        System.out.println("==============================");
+        System.out.println("두 건의 결제를 동시 진행합니다.");
+        System.out.println("한 건의 결제 가격을 먼저 입력해주세요.");
+        int price1 = getUserIntegerInput();
+        System.out.println("그 다음 건의 결제 가격을 입력해주세요.");
+        int price2 = getUserIntegerInput();
+
+        Thread payment1 = new Thread(() -> currentBankAccount.pay(price1));
+        Thread payment2 = new Thread(() -> currentBankAccount.pay(price2));
+
+        payment1.start();
+        payment2.start();
+    }
+
     private BankAccount createNewBankAccount() {
         String type = currentUser.getType();
         showBankAccountMenu(type);
@@ -211,7 +203,9 @@ public class ProgramController {
             if (input == 0) {
                 System.out.println("계좌 개설을 중단합니다.");
                 return null;
-            } else if ((type.equals(Type.KID.getValue()) && input > 3) || (type.equals(Type.TEENAGER.getValue()) && input > 3) || (type.equals(Type.ADULT.getValue()) && input > 4)) {
+            } else if ((type.equals(Type.KID.getValue()) && input > 3) ||
+                    (type.equals(Type.TEENAGER.getValue()) && input > 3) ||
+                    (type.equals(Type.ADULT.getValue()) && input > 4)) {
                 System.out.println(ErrorMessage.INVALID_INPUT.getMessage());
                 continue;
             }
@@ -351,13 +345,7 @@ public class ProgramController {
     }
 
     private void showMenu() {
-        System.out.println("==============================");
-        System.out.println("1. 고객 리스트 확인 ");
-        System.out.println("2. 고객 추가");
-        System.out.println("3. 로그인 할 고객 선택");
-        System.out.println("4. 프로그램 종료");
-        System.out.println("==============================");
-        System.out.println("실행할 메뉴를 선택해 주세요");
+        OutputView.printProgramMenu();
     }
 
     private void chooseUser() {
@@ -392,14 +380,7 @@ public class ProgramController {
     }
 
     private void showUserServiceMenu() {
-        System.out.println("==============================");
-        System.out.println(currentUser.getName() +"님 안녕하세요.");
-        System.out.println("1. 새 계좌 개설 ");
-        System.out.println("2. 계좌 리스트 확인");
-        System.out.println("3. 이용할 계좌 선택");
-        System.out.println("4. 프로그램 종료");
-        System.out.println("==============================");
-        System.out.println("실행할 메뉴를 선택해 주세요");
+        OutputView.printUserServiceMenu(currentUser.getName());
     }
 
     private void createNewCustomer() {
@@ -452,7 +433,7 @@ public class ProgramController {
                 if (sc.hasNextDouble()) {
                     return sc.nextDouble();
                 } else {
-                    System.out.println("소수점 형태로 입력해주세요.");
+                    System.out.println("소수 형태로 입력해주세요.");
                 }
             } catch (IllegalArgumentException e) {
                 System.out.println(ErrorMessage.INVALID_INPUT.getMessage());
