@@ -435,9 +435,11 @@ public class ProgramController {
         String input;
         while (true) {
             try {
-                if (!sc.hasNextInt()) { System.err.println("필요한 정수 입력 없음"); return -1; }
-                input = sc.next();
-                return Integer.parseInt(input);
+                if (sc.hasNextInt()) {
+                    return sc.nextInt();
+                } else {
+                    System.out.println("정수 형태로 입력해주세요.");
+                }
             } catch (IllegalArgumentException e) {
                 System.out.println(ErrorMessage.INVALID_INPUT.getMessage());
             }
@@ -445,12 +447,13 @@ public class ProgramController {
     }
 
     private double getUserDoubleInput() {
-        String input;
         while (true) {
             try {
-                if (!sc.hasNextDouble()) { System.err.println("필요한 소수 입력이 없음"); return -1; }
-                input = sc.next();
-                return Double.parseDouble(input);
+                if (sc.hasNextDouble()) {
+                    return sc.nextDouble();
+                } else {
+                    System.out.println("소수점 형태로 입력해주세요.");
+                }
             } catch (IllegalArgumentException e) {
                 System.out.println(ErrorMessage.INVALID_INPUT.getMessage());
             }
