@@ -362,7 +362,7 @@ public class ProgramController {
         System.out.println("고객 이름을 입력해주세요");
         String name = getUserStringInput();
         System.out.println("고객 나이를 입력해주세요");
-        int age = getUserInput();
+        int age = getUserIntegerInput()
         customer.setName(name);
         customer.setAge(age);
         List<Customer> customerList = bank.getCustomerList();
