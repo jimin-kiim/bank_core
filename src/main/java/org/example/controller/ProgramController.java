@@ -3,6 +3,7 @@ package org.example.controller;
 import org.example.constants.Type;
 import org.example.domain.*;
 import org.example.messages.ErrorMessage;
+import org.example.view.OutputView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,6 +54,7 @@ public class ProgramController {
                 bank.addBankAccount(bankAccount);
                 currentUser.addNewBankAccount(bankAccount);
             }
+            checkCreatedBankAccountInfo(bankAccount);
         } else if (userServiceInput == 2) {
             viewBankAccountList();
         } else if (userServiceInput == 3) {
@@ -64,21 +66,14 @@ public class ProgramController {
             }
         } else if (userServiceInput == 4) {
             System.out.println("고객 서비스를 종료합니다.");
+            currentUser = null;
             return 1;
         }
         return 0;
     }
 
     private void showBankAccountServiceMenu() {
-        System.out.println("==============================");
-        System.out.println(currentBankAccount.getAlias() + "계좌 서비스입니다. ");
-        System.out.println("1. 입금");
-        System.out.println("2. 출금");
-        System.out.println("3. 이체");
-        System.out.println("4. 결제");
-        System.out.println("5. 프로그램 종료");
-        System.out.println("==============================");
-        System.out.println("실행할 메뉴를 선택해 주세요");
+       OutputView.printBankAccountServiceMenu(currentBankAccount.getAlias());
     }
 
     private int selectBankAccountServiceMenu() {
@@ -93,6 +88,7 @@ public class ProgramController {
             pay();
         } else if (input == 5) {
             System.out.println("계좌 서비스를 종료합니다.");
+            currentBankAccount = null;
             return 1;
         }
         return 0;
@@ -200,6 +196,21 @@ public class ProgramController {
         }
     }
 
+    private void pay() {
+        System.out.println("==============================");
+        System.out.println("두 건의 결제를 동시 진행합니다.");
+        System.out.println("한 건의 결제 가격을 먼저 입력해주세요.");
+        int price1 = getUserIntegerInput();
+        System.out.println("그 다음 건의 결제 가격을 입력해주세요.");
+        int price2 = getUserIntegerInput();
+
+        Thread payment1 = new Thread(() -> currentBankAccount.pay(price1));
+        Thread payment2 = new Thread(() -> currentBankAccount.pay(price2));
+
+        payment1.start();
+        payment2.start();
+    }
+
     private BankAccount createNewBankAccount() {
         String type = currentUser.getType();
         showBankAccountMenu(type);
@@ -208,7 +219,9 @@ public class ProgramController {
             if (input == 0) {
                 System.out.println("계좌 개설을 중단합니다.");
                 return null;
-            } else if ((type.equals(Type.KID.getValue()) && input > 2 )|| (type.equals(Type.TEENAGER.getValue()) && input > 3) || (type.equals(Type.ADULT.getValue()) && input > 4 )) {
+            } else if ((type.equals(Type.KID.getValue()) && input > 3) ||
+                    (type.equals(Type.TEENAGER.getValue()) && input > 3) ||
+                    (type.equals(Type.ADULT.getValue()) && input > 4)) {
                 System.out.println(ErrorMessage.INVALID_INPUT.getMessage());
                 continue;
             }
@@ -216,26 +229,67 @@ public class ProgramController {
             System.out.println("별칭을 입력해 주세요");
             String alias = sc.next();
             int bankAccountNumber = bank.getBankAccountList().size() + 1;
-            if (input == 1) {
-                Checking checking =  new Checking(bankAccountNumber);
+            if (input == 1) { // 입출금 계좌
+                Checking checking = new Checking(bankAccountNumber);
                 checking.setAlias(alias);
                 return checking;
-            } else if (input == 2) {
+            } else if (input == 2) { // 적금 계좌
                 Savings savings = new Savings(bankAccountNumber);
                 savings.setAlias(alias);
+                System.out.println("적금 만기일을 입력해주세요. (YYYYMMDD 형식)");
+                String maturityDate = sc.next();
+                savings.setMaturityDate(maturityDate);
                 return savings;
-            } else if (input == 3) {
+            } else if (!type.equals(Type.KID.getValue()) && input == 3) { // 연금 계좌
                 Pension pension = new Pension(bankAccountNumber);
                 pension.setAlias(alias);
+                System.out.println("월 납입액을 입력해주세요.");
+                int monthlyContribution = getUserIntegerInput();
+                pension.setMonthlyContribution(monthlyContribution);
                 return pension;
-            } else if (input == 4) {
+            } else if (type.equals(Type.KID.getValue()) && input == 3) { // 어린이 적금 계좌
+                KidsSavings kidsSavings = new KidsSavings(bankAccountNumber);
+                kidsSavings.setAlias(alias);
+                System.out.println("적금 만기일을 입력해주세요. (YYYYMMDD 형식)");
+                String maturityDate = sc.next();
+                kidsSavings.setMaturityDate(maturityDate);
+                System.out.println("우대 금리를 입력해주세요. 예시) 0.5");
+                double bonusRate = getUserDoubleInput();
+                kidsSavings.setBonusRate(bonusRate);
+                return kidsSavings;
+            } else if (input == 4) { // 증권 계좌
                 Securities securities = new Securities(bankAccountNumber);
                 securities.setAlias(alias);
+                System.out.println("위험 자산 비중을 입력해주세요.");
+                double riskAssetRation = getUserDoubleInput();
+                securities.setRiskAssetRation(riskAssetRation);
                 return securities;
             }
         }
     }
 
+    private void checkCreatedBankAccountInfo(BankAccount bankAccount) {
+        System.out.println("==============================");
+        System.out.println("개설한 계좌 정보를 확인합니다.");
+        System.out.println("계좌 번호: " + bankAccount.getBankAccountNumber());
+        System.out.println("계좌 이름: " + bankAccount.getAlias());
+        if (bankAccount instanceof Savings) {
+            Savings savings = (Savings) bankAccount;
+            System.out.println("계좌 만기일: " + savings.getMaturityDate());
+        }
+        if (bankAccount instanceof KidsSavings) {
+            KidsSavings kidsSavings = (KidsSavings) bankAccount;
+            System.out.println("우대금리: "+ kidsSavings.getBonusRate());
+        }
+        if (bankAccount instanceof Pension) {
+            Pension pension = (Pension) bankAccount;
+            System.out.println("월 납입액: " + pension.getMonthlyContribution());
+        }
+        if (bankAccount instanceof Securities) {
+            Securities securities = (Securities) bankAccount;
+            System.out.println("위험자산 비중: " + securities.getRiskRatio());
+        }
+    }
 
     private void viewBankAccountList() {
         List<BankAccount> bankAccountList = currentUser.getBankAccountList();
@@ -294,6 +348,11 @@ public class ProgramController {
         if (!type.equals(Type.KID.getValue())) {
             System.out.println("3. 연금 계좌");
         }
+
+        if (type.equals(Type.KID.getValue())) {
+            System.out.println("3. 어린이 적금 계좌");
+        }
+
         if (type.equals(Type.ADULT.getValue())) {
             System.out.println("4. 증권 계좌");
         }
@@ -301,27 +360,8 @@ public class ProgramController {
         System.out.println("실행할 메뉴를 선택해 주세요");
     }
 
-    private Integer getUserIntegerInput() {
-        String input;
-        while (true) {
-            try {
-                if (!sc.hasNextInt()) { System.err.println("필요한 정수 입력 없음"); return -1; }
-                input = sc.next();
-                return Integer.parseInt(input);
-            } catch (IllegalArgumentException e) {
-                System.out.println(ErrorMessage.INVALID_INPUT.getMessage());
-            }
-        }
-    }
-
     private void showMenu() {
-        System.out.println("==============================");
-        System.out.println("1. 고객 리스트 확인 ");
-        System.out.println("2. 고객 추가");
-        System.out.println("3. 로그인 할 고객 선택");
-        System.out.println("4. 프로그램 종료");
-        System.out.println("==============================");
-        System.out.println("실행할 메뉴를 선택해 주세요");
+        OutputView.printProgramMenu();
     }
 
     private void chooseUser() {
@@ -356,14 +396,7 @@ public class ProgramController {
     }
 
     private void showUserServiceMenu() {
-        System.out.println("==============================");
-        System.out.println(currentUser.getName() +"님 안녕하세요.");
-        System.out.println("1. 새 계좌 개설 ");
-        System.out.println("2. 계좌 리스트 확인");
-        System.out.println("3. 이용할 계좌 선택");
-        System.out.println("4. 프로그램 종료");
-        System.out.println("==============================");
-        System.out.println("실행할 메뉴를 선택해 주세요");
+        OutputView.printUserServiceMenu(currentUser.getName());
     }
 
     private void createNewCustomer() {
@@ -393,5 +426,34 @@ public class ProgramController {
             System.out.println("" + customer.getId() + "    " + customer.getName());
         }
         System.out.println("==============================");
+    }
+
+    private Integer getUserIntegerInput() {
+        String input;
+        while (true) {
+            try {
+                if (sc.hasNextInt()) {
+                    return sc.nextInt();
+                } else {
+                    System.out.println("정수 형태로 입력해주세요.");
+                }
+            } catch (IllegalArgumentException e) {
+                System.out.println(ErrorMessage.INVALID_INPUT.getMessage());
+            }
+        }
+    }
+
+    private double getUserDoubleInput() {
+        while (true) {
+            try {
+                if (sc.hasNextDouble()) {
+                    return sc.nextDouble();
+                } else {
+                    System.out.println("소수 형태로 입력해주세요.");
+                }
+            } catch (IllegalArgumentException e) {
+                System.out.println(ErrorMessage.INVALID_INPUT.getMessage());
+            }
+        }
     }
 }
