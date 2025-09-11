@@ -6,9 +6,6 @@ import org.example.messages.ErrorMessage;
 
 import java.util.List;
 import java.util.Scanner;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
-
 
 public class ProgramController {
     private Bank bank;
