@@ -208,7 +208,7 @@ public class ProgramController {
             if (input == 0) {
                 System.out.println("계좌 개설을 중단합니다.");
                 return null;
-            } else if ((type.equals(Type.KID.getValue()) && input > 2 )|| (type.equals(Type.TEENAGER.getValue()) && input > 3) || (type.equals(Type.ADULT.getValue()) && input > 4 )) {
+            } else if ((type.equals(Type.KID.getValue()) && input > 2) || (type.equals(Type.TEENAGER.getValue()) && input > 3) || (type.equals(Type.ADULT.getValue()) && input > 4)) {
                 System.out.println(ErrorMessage.INVALID_INPUT.getMessage());
                 continue;
             }
@@ -216,26 +216,44 @@ public class ProgramController {
             System.out.println("별칭을 입력해 주세요");
             String alias = sc.next();
             int bankAccountNumber = bank.getBankAccountList().size() + 1;
-            if (input == 1) {
-                Checking checking =  new Checking(bankAccountNumber);
+            if (input == 1) { // 입출금 계좌
+                Checking checking = new Checking(bankAccountNumber);
                 checking.setAlias(alias);
                 return checking;
-            } else if (input == 2) {
+            } else if (input == 2) { // 적금 계좌
                 Savings savings = new Savings(bankAccountNumber);
                 savings.setAlias(alias);
+                System.out.println("적금 만기일을 입력해주세요. (YYYYMMDD 형식)");
+                String maturityDate = sc.next();
+                savings.setMaturityDate(maturityDate);
                 return savings;
-            } else if (input == 3) {
+            } else if (!type.equals(Type.KID.getValue()) && input == 3) { // 연금 계좌
                 Pension pension = new Pension(bankAccountNumber);
                 pension.setAlias(alias);
+                System.out.println("월 납입액을 입력해주세요.");
+                int monthlyContribution = getUserIntegerInput();
+                pension.setMonthlyContribution(monthlyContribution);
                 return pension;
-            } else if (input == 4) {
+            } else if (type.equals(Type.KID.getValue()) && input == 3) { // 어린이 적금 계좌
+                KidsSavings kidsSavings = new KidsSavings(bankAccountNumber);
+                kidsSavings.setAlias(alias);
+                System.out.println("적금 만기일을 입력해주세요. (YYYYMMDD 형식)");
+                String maturityDate = sc.next();
+                kidsSavings.setMaturityDate(maturityDate);
+                System.out.println("우대 금리를 입력해주세요. 형식)");
+                double bonusRate = getUserDoubleInput();
+                kidsSavings.setBonusRate(bonusRate);
+                return kidsSavings;
+            } else if (input == 4) { // 증권 계좌
                 Securities securities = new Securities(bankAccountNumber);
                 securities.setAlias(alias);
+                System.out.println("위험 자산 비중을 입력해주세요.");
+                double riskAssetRation = getUserDoubleInput();
+                securities.setRiskAssetRation(riskAssetRation);
                 return securities;
             }
         }
     }
-
 
     private void viewBankAccountList() {
         List<BankAccount> bankAccountList = currentUser.getBankAccountList();
@@ -294,24 +312,16 @@ public class ProgramController {
         if (!type.equals(Type.KID.getValue())) {
             System.out.println("3. 연금 계좌");
         }
+
+        if (type.equals(Type.KID.getValue())) {
+            System.out.println("3. 어린이 적금 계좌");
+        }
+
         if (type.equals(Type.ADULT.getValue())) {
             System.out.println("4. 증권 계좌");
         }
         System.out.println("==============================");
         System.out.println("실행할 메뉴를 선택해 주세요");
-    }
-
-    private Integer getUserIntegerInput() {
-        String input;
-        while (true) {
-            try {
-                if (!sc.hasNextInt()) { System.err.println("필요한 정수 입력 없음"); return -1; }
-                input = sc.next();
-                return Integer.parseInt(input);
-            } catch (IllegalArgumentException e) {
-                System.out.println(ErrorMessage.INVALID_INPUT.getMessage());
-            }
-        }
     }
 
     private void showMenu() {
@@ -393,5 +403,31 @@ public class ProgramController {
             System.out.println("" + customer.getId() + "    " + customer.getName());
         }
         System.out.println("==============================");
+    }
+
+    private Integer getUserIntegerInput() {
+        String input;
+        while (true) {
+            try {
+                if (!sc.hasNextInt()) { System.err.println("필요한 정수 입력 없음"); return -1; }
+                input = sc.next();
+                return Integer.parseInt(input);
+            } catch (IllegalArgumentException e) {
+                System.out.println(ErrorMessage.INVALID_INPUT.getMessage());
+            }
+        }
+    }
+
+    private double getUserDoubleInput() {
+        String input;
+        while (true) {
+            try {
+                if (!sc.hasNextDouble()) { System.err.println("필요한 소수 입력이 없음"); return -1; }
+                input = sc.next();
+                return Double.parseDouble(input);
+            } catch (IllegalArgumentException e) {
+                System.out.println(ErrorMessage.INVALID_INPUT.getMessage());
+            }
+        }
     }
 }
