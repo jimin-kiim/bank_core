@@ -65,32 +65,10 @@ public class ProgramController {
             }
         } else if (userServiceInput == 4) {
             System.out.println("고객 서비스를 종료합니다.");
+            currentUser = null;
             return 1;
         }
         return 0;
-    }
-
-    private void checkCreatedBankAccountInfo(BankAccount bankAccount) {
-        System.out.println("==============================");
-        System.out.println("개설한 계좌 정보를 확인합니다.");
-        System.out.println("계좌 번호 :" + bankAccount.getBankAccountNumber());
-        System.out.println("계좌 이름 :" + bankAccount.getAlias());
-        if (bankAccount instanceof Savings) {
-            Savings savings = (Savings) bankAccount;
-            System.out.println("계좌 만기일 :" + savings.getMaturityDate());
-        }
-        if (bankAccount instanceof KidsSavings) {
-            KidsSavings kidsSavings = (KidsSavings) bankAccount;
-            System.out.println("우대금리 :"+ kidsSavings.getMaturityDate());
-        }
-        if (bankAccount instanceof Pension) {
-            Pension pension = (Pension) bankAccount;
-            System.out.println("월 납입액 :" + pension.getMonthlyContribution());
-        }
-        if (bankAccount instanceof Securities) {
-            Securities securities = (Securities) bankAccount;
-            System.out.println("위험자산 비중 :" + securities.getRiskRatio());
-        }
     }
 
     private void showBankAccountServiceMenu() {
@@ -117,6 +95,7 @@ public class ProgramController {
             pay();
         } else if (input == 5) {
             System.out.println("계좌 서비스를 종료합니다.");
+            currentBankAccount = null;
             return 1;
         }
         return 0;
@@ -232,7 +211,7 @@ public class ProgramController {
             if (input == 0) {
                 System.out.println("계좌 개설을 중단합니다.");
                 return null;
-            } else if ((type.equals(Type.KID.getValue()) && input > 2) || (type.equals(Type.TEENAGER.getValue()) && input > 3) || (type.equals(Type.ADULT.getValue()) && input > 4)) {
+            } else if ((type.equals(Type.KID.getValue()) && input > 3) || (type.equals(Type.TEENAGER.getValue()) && input > 3) || (type.equals(Type.ADULT.getValue()) && input > 4)) {
                 System.out.println(ErrorMessage.INVALID_INPUT.getMessage());
                 continue;
             }
@@ -264,7 +243,7 @@ public class ProgramController {
                 System.out.println("적금 만기일을 입력해주세요. (YYYYMMDD 형식)");
                 String maturityDate = sc.next();
                 kidsSavings.setMaturityDate(maturityDate);
-                System.out.println("우대 금리를 입력해주세요. 형식)");
+                System.out.println("우대 금리를 입력해주세요. 예시) 0.5");
                 double bonusRate = getUserDoubleInput();
                 kidsSavings.setBonusRate(bonusRate);
                 return kidsSavings;
@@ -276,6 +255,29 @@ public class ProgramController {
                 securities.setRiskAssetRation(riskAssetRation);
                 return securities;
             }
+        }
+    }
+
+    private void checkCreatedBankAccountInfo(BankAccount bankAccount) {
+        System.out.println("==============================");
+        System.out.println("개설한 계좌 정보를 확인합니다.");
+        System.out.println("계좌 번호: " + bankAccount.getBankAccountNumber());
+        System.out.println("계좌 이름: " + bankAccount.getAlias());
+        if (bankAccount instanceof Savings) {
+            Savings savings = (Savings) bankAccount;
+            System.out.println("계좌 만기일: " + savings.getMaturityDate());
+        }
+        if (bankAccount instanceof KidsSavings) {
+            KidsSavings kidsSavings = (KidsSavings) bankAccount;
+            System.out.println("우대금리: "+ kidsSavings.getBonusRate());
+        }
+        if (bankAccount instanceof Pension) {
+            Pension pension = (Pension) bankAccount;
+            System.out.println("월 납입액: " + pension.getMonthlyContribution());
+        }
+        if (bankAccount instanceof Securities) {
+            Securities securities = (Securities) bankAccount;
+            System.out.println("위험자산 비중: " + securities.getRiskRatio());
         }
     }
 

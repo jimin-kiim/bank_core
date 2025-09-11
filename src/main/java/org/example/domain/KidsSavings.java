@@ -10,4 +10,8 @@ public class KidsSavings extends Savings {
     public void setBonusRate(double bonusRate) {
         this.bonusRate = bonusRate;
     }
+
+    public double getBonusRate() {
+        return bonusRate;
+    }
 }
