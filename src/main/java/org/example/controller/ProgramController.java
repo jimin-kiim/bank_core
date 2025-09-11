@@ -4,6 +4,7 @@ import org.example.constants.Type;
 import org.example.domain.*;
 import org.example.messages.ErrorMessage;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
@@ -74,7 +75,8 @@ public class ProgramController {
         System.out.println("1. 입금");
         System.out.println("2. 출금");
         System.out.println("3. 이체");
-        System.out.println("4. 프로그램 종료");
+        System.out.println("4. 결제");
+        System.out.println("5. 프로그램 종료");
         System.out.println("==============================");
         System.out.println("실행할 메뉴를 선택해 주세요");
     }
@@ -88,11 +90,29 @@ public class ProgramController {
         } else if (input == 3) {
             transfer();
         } else if (input == 4) {
+            pay();
+        } else if (input == 5) {
             System.out.println("계좌 서비스를 종료합니다.");
             return 1;
         }
         return 0;
     }
+
+    private void pay() {
+        System.out.println("==============================");
+        System.out.println("두 건의 결제를 동시 진행합니다.");
+        System.out.println("한 건의 결제 가격을 먼저 입력해주세요.");
+        int price1 = getUserIntegerInput();
+        System.out.println("그 다음 건의 결제 가격을 입력해주세요.");
+        int price2 = getUserIntegerInput();
+
+        Thread payment1 = new Thread(() -> currentBankAccount.pay(price1));
+        Thread payment2 = new Thread(() -> currentBankAccount.pay(price2));
+
+        payment1.start();
+        payment2.start();
+    }
+
 
     private void deposit() {
         System.out.println("==============================");

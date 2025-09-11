@@ -57,10 +57,22 @@ public class BankAccount {
             this.balance -= withdrawalAmount;
             return true;
         } catch (IllegalArgumentException e) {
-            System.out.println("출금 실패: " + e.getMessage());
+            System.out.println(withdrawalAmount+"원 출금/이체/결제 실패: " + e.getMessage());
             return false;
         } finally {
             lock.unlock(); // 반드시 해제해야 함
+        }
+    }
+
+    public void pay(int price) {
+        System.out.println("결제 진행 중");
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        if (decreaseBalance(price)) {
+            System.out.println(price + "원 결제 완료");
         }
     }
 }
