@@ -28,10 +28,7 @@ public class Customer {
         return type;
     }
 
-    public void addNewBankAccount(BankAccount bankAccount) {
-        bankAccount.setBankAccountNumber(bankAccountList.size() + 1);
-        bankAccountList.add((BankAccount) bankAccount);
-    }
+    public void addNewBankAccount(BankAccount bankAccount) { bankAccountList.add((BankAccount) bankAccount);}
 
     public void setName(String name) {
         this.name = name;

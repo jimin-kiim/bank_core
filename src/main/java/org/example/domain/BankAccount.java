@@ -1,5 +1,7 @@
 package org.example.domain;
 
+import org.example.messages.ErrorMessage;
+
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -8,6 +10,10 @@ public class BankAccount {
     private String alias;
     private int balance;
     private final Lock lock = new ReentrantLock();
+
+    public BankAccount(int bankAccountNumber) {
+        this.bankAccountNumber = bankAccountNumber;
+    }
 
     public int getBankAccountNumber() {
         return bankAccountNumber;
@@ -42,10 +48,17 @@ public class BankAccount {
         }
     }
 
-    public void decreaseBalance(int withdrawalAmount) {
+    public boolean decreaseBalance(int withdrawalAmount) {
         lock.lock();
         try {
+            if (withdrawalAmount > balance) {
+                throw new IllegalArgumentException(ErrorMessage.LIMIT_EXCEEDED.getMessage());
+            }
             this.balance -= withdrawalAmount;
+            return true;
+        } catch (IllegalArgumentException e) {
+            System.out.println("출금 실패: " + e.getMessage());
+            return false;
         } finally {
             lock.unlock(); // 반드시 해제해야 함
         }

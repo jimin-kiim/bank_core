@@ -20,7 +20,7 @@ public class ProgramController {
     public void startProgram() {
         while (true) {
             showMenu();
-            int input = getUserInput();
+            int input = getUserIntegerInput();
             if (input == 4) {
                 System.out.println("프로그램을 종료합니다.");
                 return;
@@ -45,10 +45,11 @@ public class ProgramController {
     }
 
     private int selectUserServiceMenu() {
-        int userServiceInput = getUserInput();
+        int userServiceInput = getUserIntegerInput();
         if (userServiceInput == 1) {
             BankAccount bankAccount = createNewBankAccount();
             if (bankAccount != null) {
+                bank.addBankAccount(bankAccount);
                 currentUser.addNewBankAccount(bankAccount);
             }
         } else if (userServiceInput == 2) {
@@ -79,7 +80,7 @@ public class ProgramController {
     }
 
     private int selectBankAccountServiceMenu() {
-        int input = getUserInput();
+        int input = getUserIntegerInput();
         if (input == 1) {
             deposit();
         } else if (input == 2) {
@@ -97,9 +98,9 @@ public class ProgramController {
         System.out.println("==============================");
         System.out.println("보유 잔액: " + currentBankAccount.getBalance());
         System.out.println("입금할 금액을 입력해주세요.");
-        int depositAmount = getUserInput();
+        int depositAmount = getUserIntegerInput();
 
-        try { // 임계 영역
+        try {
             System.out.println("입금 중");
             Thread.sleep(2000);
             currentBankAccount.increaseBalance(depositAmount);
@@ -114,18 +115,9 @@ public class ProgramController {
         System.out.println("==============================");
         int balance = currentBankAccount.getBalance();
         System.out.println("출금 가능 잔액: " + balance);
-        if (balance <= 0) {
-            System.out.println("잔액이 0원으로 출금을 진행할 수 없어 출금 진행을 중단합니다.");
-            return;
-        }
 
         System.out.println("출금할 금액을 입력해주세요.");
-        int withdrawalAmount = getUserInput();
-
-        if (withdrawalAmount > balance) {
-            System.out.println("잔액이 부족해 출금 진행을 중단합니다.");
-            return;
-        }
+        int withdrawalAmount = getUserIntegerInput();
 
         try {
             System.out.println("출금 중");
@@ -140,14 +132,59 @@ public class ProgramController {
 
 
     private void transfer() {
+        System.out.println("==============================");
+        List<BankAccount> bankAccountList = bank.getBankAccountList();
+        if (bankAccountList.size() == 1 ) {
+            System.out.println("송금 가능한 계좌가 없어 이체 서비스를 종료합니다.");
+            return;
+        }
+        System.out.println("송금 가능한 계좌의 목록입니다.");
+        System.out.println("계좌번호 계좌이름");
+        for (BankAccount bankAccount : bankAccountList) {
+            if (bankAccount.getBankAccountNumber() == currentBankAccount.getBankAccountNumber()) continue;
+            System.out.println(bankAccount.getBankAccountNumber() + "  " + bankAccount.getAlias());
+        }
+        System.out.println("==============================");
+        System.out.println("송금할 계좌의 계좌 번호를 입력해주세요.");
+        System.out.println("0 입력 시 계좌 접속 종료");
+        int bankAccountNumber = getUserIntegerInput();
+        if (bankAccountNumber == 0) {
+            System.out.println("이체를 취소합니다");
+            return;
+        }
+        BankAccount remittanceDestination = bankAccountList.stream().filter(bankAccount -> bankAccount.getBankAccountNumber() == bankAccountNumber).findFirst().orElse(null);
+        if (remittanceDestination == null) {
+            System.out.println("잘못된 계좌 번호로 이체를 취소합니다.");
+            return;
+        }
+        System.out.println(bankAccountNumber + "으로 송금할 금액을 입력해주세요.");
+        System.out.println("0 입력 시 계좌 접속 종료");
+        int remittanceAmount = getUserIntegerInput();
+        if (remittanceAmount == 0) {
+            System.out.println("이체를 취소합니다");
+            return;
+        }
 
+        try {
+            System.out.println("이체 중");
+            Thread.sleep(2000);
+
+            if (currentBankAccount.decreaseBalance(remittanceAmount)) {
+                remittanceDestination.increaseBalance(remittanceAmount);
+            }
+
+            System.out.println("이체 완료");
+            System.out.println("이체 후 잔액: " + currentBankAccount.getBalance());
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
     }
 
     private BankAccount createNewBankAccount() {
         String type = currentUser.getType();
         showBankAccountMenu(type);
         while (true) {
-            int input = getUserInput();
+            int input = getUserIntegerInput();
             if (input == 0) {
                 System.out.println("계좌 개설을 중단합니다.");
                 return null;
@@ -157,21 +194,22 @@ public class ProgramController {
             }
 
             System.out.println("별칭을 입력해 주세요");
-            String alias = getUserStringInput();
+            String alias = sc.next();
+            int bankAccountNumber = bank.getBankAccountList().size() + 1;
             if (input == 1) {
-                Checking checking =  new Checking();
+                Checking checking =  new Checking(bankAccountNumber);
                 checking.setAlias(alias);
                 return checking;
             } else if (input == 2) {
-                Savings savings = new Savings();
+                Savings savings = new Savings(bankAccountNumber);
                 savings.setAlias(alias);
                 return savings;
             } else if (input == 3) {
-                Pension pension = new Pension();
+                Pension pension = new Pension(bankAccountNumber);
                 pension.setAlias(alias);
                 return pension;
             } else if (input == 4) {
-                Securities securities = new Securities();
+                Securities securities = new Securities(bankAccountNumber);
                 securities.setAlias(alias);
                 return securities;
             }
@@ -210,7 +248,7 @@ public class ProgramController {
         while (true) {
             System.out.println("계좌 번호를 입력해주세요");
             System.out.println("0 입력 시 계좌 접속 종료");
-            int input = getUserInput();
+            int input = getUserIntegerInput();
             if (input == 0) {
                 System.out.println("이용 계좌 선택을 종료합니다");
                 return;
@@ -243,20 +281,17 @@ public class ProgramController {
         System.out.println("실행할 메뉴를 선택해 주세요");
     }
 
-    private Integer getUserInput() {
+    private Integer getUserIntegerInput() {
         String input;
         while (true) {
             try {
+                if (!sc.hasNextInt()) { System.err.println("필요한 정수 입력 없음"); return -1; }
                 input = sc.next();
                 return Integer.parseInt(input);
             } catch (IllegalArgumentException e) {
                 System.out.println(ErrorMessage.INVALID_INPUT.getMessage());
             }
         }
-    }
-
-    private String getUserStringInput() {
-        return sc.next();
     }
 
     private void showMenu() {
@@ -285,7 +320,7 @@ public class ProgramController {
         while (true) {
             System.out.println("고객 id를 입력해주세요");
             System.out.println("0 입력 시 고객 계정 접속 종료");
-            int input = getUserInput();
+            int input = getUserIntegerInput();
             if (input == 0) {
                 System.out.println("접속 고객 선택을 종료합니다");
                 return;
@@ -316,9 +351,9 @@ public class ProgramController {
         System.out.println("==============================");
         System.out.println("새 고객 정보를 등록합니다.");
         System.out.println("고객 이름을 입력해주세요");
-        String name = getUserStringInput();
+        String name = sc.next();
         System.out.println("고객 나이를 입력해주세요");
-        int age = getUserInput();
+        int age = getUserIntegerInput();
         customer.setName(name);
         customer.setAge(age);
         List<Customer> customerList = bank.getCustomerList();
