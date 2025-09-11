@@ -3,7 +3,7 @@ package org.example.domain;
 public class BankAccount {
     private int bankAccountNumber;
     private String alias;
-    int balance;
+    private int balance;
 
     public int getBankAccountNumber() {
         return bankAccountNumber;
