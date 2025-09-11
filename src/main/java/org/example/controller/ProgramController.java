@@ -70,7 +70,7 @@ public class ProgramController {
     private void showBankAccountServiceMenu() {
         System.out.println("==============================");
         System.out.println(currentBankAccount.getAlias() + "계좌 서비스입니다. ");
-        System.out.println("1. 입금 ");
+        System.out.println("1. 입금");
         System.out.println("2. 출금");
         System.out.println("3. 이체");
         System.out.println("4. 프로그램 종료");
@@ -101,7 +101,7 @@ public class ProgramController {
 
         try { // 임계 영역
             System.out.println("입금 중");
-            Thread.sleep(200);
+            Thread.sleep(2000);
             currentBankAccount.increaseBalance(depositAmount);
             System.out.println(depositAmount +"원이 입금되었습니다.");
             System.out.println("입금 후 잔액: " + currentBankAccount.getBalance());
@@ -112,13 +112,24 @@ public class ProgramController {
 
     private void withdrawal() {
         System.out.println("==============================");
-        System.out.println("출금 가능 잔액: " + currentBankAccount.getBalance());
+        int balance = currentBankAccount.getBalance();
+        System.out.println("출금 가능 잔액: " + balance);
+        if (balance <= 0) {
+            System.out.println("잔액이 0원으로 출금을 진행할 수 없어 출금 진행을 중단합니다.");
+            return;
+        }
+
         System.out.println("출금할 금액을 입력해주세요.");
         int withdrawalAmount = getUserInput();
 
+        if (withdrawalAmount > balance) {
+            System.out.println("잔액이 부족해 출금 진행을 중단합니다.");
+            return;
+        }
+
         try {
             System.out.println("출금 중");
-            Thread.sleep(200);
+            Thread.sleep(2000);
             currentBankAccount.decreaseBalance(withdrawalAmount);
             System.out.println(withdrawalAmount +"원이 출금되었습니다.");
             System.out.println("출금 후 잔액: " + currentBankAccount.getBalance());
@@ -192,7 +203,7 @@ public class ProgramController {
         System.out.println("==============================");
         System.out.println("  계좌번호     계좌명");
         for (BankAccount bankAccount : bankAccountList) {
-            System.out.println("" + bankAccount.getBankAccountNumber() + "    " + bankAccount.getAlias());
+            System.out.println(bankAccount.getBankAccountNumber() + "    " + bankAccount.getAlias());
         }
         System.out.println("==============================");
 
