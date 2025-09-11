@@ -1,8 +1,13 @@
 package org.example.domain;
 
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+
 public class BankAccount {
     private int bankAccountNumber;
     private String alias;
+    private int balance;
+    private final Lock lock = new ReentrantLock();
 
     public int getBankAccountNumber() {
         return bankAccountNumber;
@@ -17,5 +22,32 @@ public class BankAccount {
     }
     public String getAlias() {
         return alias;
+    }
+
+    public int getBalance() {
+        lock.lock();
+        try {
+            return balance;
+        } finally {
+            lock.unlock();
+        }
+    }
+
+    public void increaseBalance(int depositAmount) {
+        lock.lock();
+        try {
+            this.balance += depositAmount;
+        } finally {
+            lock.unlock(); // 반드시 해제해야 함
+        }
+    }
+
+    public void decreaseBalance(int withdrawalAmount) {
+        lock.lock();
+        try {
+            this.balance -= withdrawalAmount;
+        } finally {
+            lock.unlock(); // 반드시 해제해야 함
+        }
     }
 }
