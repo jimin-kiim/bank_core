@@ -110,6 +110,8 @@ public class ProgramController {
             currentBankAccount.increaseBalance(depositAmount);
             System.out.println(depositAmount +"원이 입금되었습니다.");
             System.out.println("입금 후 잔액: " + currentBankAccount.getBalance());
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
         } finally {
             lock.unlock(); // 반드시 해제해야 함
         }
