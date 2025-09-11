@@ -36,8 +36,7 @@ public class ProgramController {
         } else if (input == 2) {
             createNewCustomer();
         } else if (input == 3) {
-            while (chooseUser() == -1) {
-            }
+            chooseUser();
             if (currentUser == null) {
                 return;
             }
@@ -62,7 +61,6 @@ public class ProgramController {
     }
 
     private void chooseBankAccount() {
-        while (true) {
             List<BankAccount> bankAccountList = currentUser.getBankAccountList();
             if (bankAccountList.size() == 0) {
                 System.out.println("이용할 수 있는 계좌가 없습니다.");
@@ -75,6 +73,8 @@ public class ProgramController {
                 System.out.println("" + bankAccount.getBankAccountNumber() + "    " + bankAccount.getAlias());
             }
             System.out.println("==============================");
+
+        while (true) {
             System.out.println("계좌 번호를 입력해주세요");
             System.out.println("0 입력 시 계좌 접속 종료");
             int input = getUserInput();
@@ -185,29 +185,35 @@ public class ProgramController {
         System.out.println("실행할 메뉴를 선택해 주세요");
     }
 
-    private int chooseUser() {
+    private void chooseUser() {
         List<Customer> customerList = Bank.getCustomerList();
+        if (customerList.size() == 0) {
+            System.out.println("접속할 수 있는 고객 계정이 없습니다.");
+            System.out.println("고객 계정을 먼저 생성해 주세요.");
+            return;
+        }
         System.out.println("==============================");
         System.out.println("  id     이름");
         for (Customer customer : customerList) {
             System.out.println("" + customer.getId() + "    " + customer.getName());
         }
         System.out.println("==============================");
-        System.out.println("고객 id를 입력해주세요");
-        System.out.println("0 입력 시 고객 계정 접속 종료");
-        int input = getUserInput();
-        if (input == 0) {
-            System.out.println("접속 고객 선택을 종료합니다");
-            return 0;
-        }
-        for (int i = 0; i < customerList.size(); i++) {
-            if (customerList.get(i).getId() == input) {
-                currentUser = customerList.get(i);
-                return 0;
+        while (true) {
+            System.out.println("고객 id를 입력해주세요");
+            System.out.println("0 입력 시 고객 계정 접속 종료");
+            int input = getUserInput();
+            if (input == 0) {
+                System.out.println("접속 고객 선택을 종료합니다");
+                return;
             }
+            for (int i = 0; i < customerList.size(); i++) {
+                if (customerList.get(i).getId() == input) {
+                    currentUser = customerList.get(i);
+                    return;
+                }
+            }
+            System.out.println("유효하지 않은 입력 값입니다.");
         }
-        System.out.println("유효하지 않은 입력 값입니다.");
-        return -1;
     }
 
     private void showUserServiceMenu() {
