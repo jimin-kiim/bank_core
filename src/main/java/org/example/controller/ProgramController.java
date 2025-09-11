@@ -53,6 +53,7 @@ public class ProgramController {
                 bank.addBankAccount(bankAccount);
                 currentUser.addNewBankAccount(bankAccount);
             }
+            checkCreatedBankAccountInfo(bankAccount);
         } else if (userServiceInput == 2) {
             viewBankAccountList();
         } else if (userServiceInput == 3) {
@@ -67,6 +68,29 @@ public class ProgramController {
             return 1;
         }
         return 0;
+    }
+
+    private void checkCreatedBankAccountInfo(BankAccount bankAccount) {
+        System.out.println("==============================");
+        System.out.println("개설한 계좌 정보를 확인합니다.");
+        System.out.println("계좌 번호 :" + bankAccount.getBankAccountNumber());
+        System.out.println("계좌 이름 :" + bankAccount.getAlias());
+        if (bankAccount instanceof Savings) {
+            Savings savings = (Savings) bankAccount;
+            System.out.println("계좌 만기일 :" + savings.getMaturityDate());
+        }
+        if (bankAccount instanceof KidsSavings) {
+            KidsSavings kidsSavings = (KidsSavings) bankAccount;
+            System.out.println("우대금리 :"+ kidsSavings.getMaturityDate());
+        }
+        if (bankAccount instanceof Pension) {
+            Pension pension = (Pension) bankAccount;
+            System.out.println("월 납입액 :" + pension.getMonthlyContribution());
+        }
+        if (bankAccount instanceof Securities) {
+            Securities securities = (Securities) bankAccount;
+            System.out.println("위험자산 비중 :" + securities.getRiskRatio());
+        }
     }
 
     private void showBankAccountServiceMenu() {

@@ -10,4 +10,8 @@ public class Pension extends BankAccount {
     public void setMonthlyContribution(int monthlyContribution) {
         this.monthlyContribution = monthlyContribution;
     }
+
+    public int getMonthlyContribution() {
+        return monthlyContribution;
+    }
 }

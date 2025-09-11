@@ -10,4 +10,8 @@ public class Securities extends BankAccount {
     public void setRiskAssetRation(double riskAssetRation) {
         this.riskAssetRation = riskAssetRation;
     }
+
+    public double getRiskRatio() {
+        return riskAssetRation;
+    }
 }

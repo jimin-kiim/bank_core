@@ -10,4 +10,8 @@ public class Savings extends BankAccount {
     public void setMaturityDate(String maturityDate) {
         this.maturityDate = maturityDate;
     }
+
+    public String getMaturityDate() {
+        return maturityDate;
+    }
 }
