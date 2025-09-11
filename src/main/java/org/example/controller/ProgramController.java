@@ -101,9 +101,7 @@ public class ProgramController {
         System.out.println("보유 잔액: " + currentBankAccount.getBalance());
         System.out.println("입금할 금액을 입력해주세요.");
         int depositAmount = getUserInput();
-        Lock lock = new ReentrantLock();
 
-        lock.lock();
         try { // 임계 영역
             System.out.println("입금 중");
             Thread.sleep(200);
@@ -112,8 +110,6 @@ public class ProgramController {
             System.out.println("입금 후 잔액: " + currentBankAccount.getBalance());
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
-        } finally {
-            lock.unlock(); // 반드시 해제해야 함
         }
     }
 
@@ -122,10 +118,8 @@ public class ProgramController {
         System.out.println("출금 가능 잔액: " + currentBankAccount.getBalance());
         System.out.println("출금할 금액을 입력해주세요.");
         int withdrawalAmount = getUserInput();
-        Lock lock = new ReentrantLock();
 
-        lock.lock();
-        try { // 임계 영역
+        try {
             System.out.println("출금 중");
             Thread.sleep(200);
             currentBankAccount.decreaseBalance(withdrawalAmount);
@@ -133,13 +127,12 @@ public class ProgramController {
             System.out.println("출금 후 잔액: " + currentBankAccount.getBalance());
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
-        } finally {
-            lock.unlock(); // 반드시 해제해야 함
         }
     }
 
 
     private void transfer() {
+
     }
 
     private BankAccount createNewBankAccount() {
