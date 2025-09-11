@@ -37,73 +37,69 @@ public class ProgramController {
             createNewCustomer();
         } else if (input == 3) {
             chooseUser();
-            if (currentUser == null) {
-                return;
-            }
+            if (currentUser == null) return;
             while (true) {
                 showUserServiceMenu();
-                int userServiceInput = getUserInput();
-                if (userServiceInput == 1) {
-                    BankAccount bankAccount = createNewBankAccount();
-                    if (bankAccount != null) {
-                        currentUser.addNewBankAccount(bankAccount);
-                    }
-                } else if (userServiceInput == 2) {
-                    viewBankAccountList();
-                } else if (userServiceInput == 3) {
-                    chooseBankAccount();
-                } else if (userServiceInput == 4) {
-                    System.out.println("계좌 서비스를 종료합니다.");
-                    break;
-                }
+                if (selectUserServiceMenu() == 1) break;
             }
         }
     }
 
-    private void chooseBankAccount() {
-            List<BankAccount> bankAccountList = currentUser.getBankAccountList();
-            if (bankAccountList.size() == 0) {
-                System.out.println("이용할 수 있는 계좌가 없습니다.");
-                System.out.println("계좌를 먼저 개설해 주세요.");
-                return;
+    private int selectUserServiceMenu() {
+        int userServiceInput = getUserInput();
+        if (userServiceInput == 1) {
+            BankAccount bankAccount = createNewBankAccount();
+            if (bankAccount != null) {
+                currentUser.addNewBankAccount(bankAccount);
             }
-            System.out.println("==============================");
-            System.out.println("  계좌번호     계좌명");
-            for (BankAccount bankAccount : bankAccountList) {
-                System.out.println("" + bankAccount.getBankAccountNumber() + "    " + bankAccount.getAlias());
+        } else if (userServiceInput == 2) {
+            viewBankAccountList();
+        } else if (userServiceInput == 3) {
+            chooseBankAccount();
+            if (currentBankAccount == null) return 0;
+            while (true) {
+                showBankAccountServiceMenu();
+                selectBankAccountServiceMenu();
             }
-            System.out.println("==============================");
-
-        while (true) {
-            System.out.println("계좌 번호를 입력해주세요");
-            System.out.println("0 입력 시 계좌 접속 종료");
-            int input = getUserInput();
-            if (input == 0) {
-                System.out.println("이용 계좌 선택을 종료합니다");
-                return;
-            }
-            for (int i = 0; i < bankAccountList.size(); i++) {
-                if (bankAccountList.get(i).getBankAccountNumber() == input) {
-                    currentBankAccount = bankAccountList.get(i);
-                    return;
-                }
-            }
-            System.out.println("유효하지 않은 입력 값입니다.");
+        } else if (userServiceInput == 4) {
+            System.out.println("고객 서비스를 종료합니다.");
+            return 1;
         }
+        return 0;
     }
 
-    private void viewBankAccountList() {
-        List<BankAccount> bankAccountList = currentUser.getBankAccountList();
+    private void showBankAccountServiceMenu() {
         System.out.println("==============================");
-        if (bankAccountList.size() == 0 ) {
-            System.out.println("개설된 계좌 정보가 없습니다.");
-            return;
+        System.out.println(currentBankAccount.getAlias() + "계좌 서비스입니다. ");
+        System.out.println("1. 입금 ");
+        System.out.println("2. 출금");
+        System.out.println("3. 이체");
+        System.out.println("4. 프로그램 종료");
+        System.out.println("==============================");
+        System.out.println("실행할 메뉴를 선택해 주세요");
+    }
+
+    private void selectBankAccountServiceMenu() {
+        while (true) {
+            int input = getUserInput();
+            if (input == 1) {
+                deposit();
+            } else if (input == 2) {
+                withdrawal();
+            } else if (input == 3) {
+                transfer();
+            } else if (input == 4) {
+                System.out.println("계좌 서비스를 종료합니다.");
+                break;
+            }
         }
-        System.out.println("개설된 계좌의 리스트입니다.");
-        System.out.println("계좌번호 계좌이름");
-        for (BankAccount bankAccount : bankAccountList) {
-            System.out.println(bankAccount.getBankAccountNumber() + "  " + bankAccount.getAlias());
-        }
+    }
+
+    private void withdrawal() {
+    }
+
+    private void deposit() {
+        
     }
 
     private BankAccount createNewBankAccount() {
@@ -138,6 +134,53 @@ public class ProgramController {
                 securities.setAlias(alias);
                 return securities;
             }
+        }
+    }
+
+
+    private void viewBankAccountList() {
+        List<BankAccount> bankAccountList = currentUser.getBankAccountList();
+        System.out.println("==============================");
+        if (bankAccountList.size() == 0 ) {
+            System.out.println("개설된 계좌 정보가 없습니다.");
+            return;
+        }
+        System.out.println("개설된 계좌의 리스트입니다.");
+        System.out.println("계좌번호 계좌이름");
+        for (BankAccount bankAccount : bankAccountList) {
+            System.out.println(bankAccount.getBankAccountNumber() + "  " + bankAccount.getAlias());
+        }
+    }
+
+    private void chooseBankAccount() {
+        List<BankAccount> bankAccountList = currentUser.getBankAccountList();
+        if (bankAccountList.size() == 0) {
+            System.out.println("이용할 수 있는 계좌가 없습니다.");
+            System.out.println("계좌를 먼저 개설해 주세요.");
+            return;
+        }
+        System.out.println("==============================");
+        System.out.println("  계좌번호     계좌명");
+        for (BankAccount bankAccount : bankAccountList) {
+            System.out.println("" + bankAccount.getBankAccountNumber() + "    " + bankAccount.getAlias());
+        }
+        System.out.println("==============================");
+
+        while (true) {
+            System.out.println("계좌 번호를 입력해주세요");
+            System.out.println("0 입력 시 계좌 접속 종료");
+            int input = getUserInput();
+            if (input == 0) {
+                System.out.println("이용 계좌 선택을 종료합니다");
+                return;
+            }
+            for (int i = 0; i < bankAccountList.size(); i++) {
+                if (bankAccountList.get(i).getBankAccountNumber() == input) {
+                    currentBankAccount = bankAccountList.get(i);
+                    return;
+                }
+            }
+            System.out.println("유효하지 않은 입력 값입니다.");
         }
     }
 
@@ -219,7 +262,6 @@ public class ProgramController {
     private void showUserServiceMenu() {
         System.out.println("==============================");
         System.out.println(currentUser.getName() +"님 안녕하세요.");
-        System.out.println("이용할 서비스를 선택해주세요.");
         System.out.println("1. 새 계좌 개설 ");
         System.out.println("2. 계좌 리스트 확인");
         System.out.println("3. 이용할 계좌 선택");
