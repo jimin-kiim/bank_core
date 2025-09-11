@@ -6,6 +6,9 @@ import org.example.messages.ErrorMessage;
 
 import java.util.List;
 import java.util.Scanner;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+
 
 public class ProgramController {
     private Bank bank;
@@ -93,13 +96,46 @@ public class ProgramController {
         return 0;
     }
 
-    private void withdrawal() {
-
-    }
-
     private void deposit() {
-        
+        System.out.println("==============================");
+        System.out.println("보유 잔액: " + currentBankAccount.getBalance());
+        System.out.println("입금할 금액을 입력해주세요.");
+        int depositAmount = getUserInput();
+        Lock lock = new ReentrantLock();
+
+        lock.lock();
+        try { // 임계 영역
+            System.out.println("입금 중");
+            Thread.sleep(200);
+            currentBankAccount.increaseBalance(depositAmount);
+            System.out.println(depositAmount +"원이 입금되었습니다.");
+            System.out.println("입금 후 잔액: " + currentBankAccount.getBalance());
+        } finally {
+            lock.unlock(); // 반드시 해제해야 함
+        }
     }
+
+    private void withdrawal() {
+        System.out.println("==============================");
+        System.out.println("출금 가능 잔액: " + currentBankAccount.getBalance());
+        System.out.println("출금할 금액을 입력해주세요.");
+        int withdrawalAmount = getUserInput();
+        Lock lock = new ReentrantLock();
+
+        lock.lock();
+        try { // 임계 영역
+            System.out.println("출금 중");
+            Thread.sleep(200);
+            currentBankAccount.decreaseBalance(withdrawalAmount);
+            System.out.println(withdrawalAmount +"원이 출금되었습니다.");
+            System.out.println("출금 후 잔액: " + currentBankAccount.getBalance());
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        } finally {
+            lock.unlock(); // 반드시 해제해야 함
+        }
+    }
+
 
     private void transfer() {
     }
