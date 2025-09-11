@@ -7,7 +7,6 @@ import org.example.messages.ErrorMessage;
 import java.util.List;
 import java.util.Scanner;
 
-
 public class ProgramController {
     private Bank bank;
     private Customer currentUser;
@@ -59,7 +58,7 @@ public class ProgramController {
             if (currentBankAccount == null) return 0;
             while (true) {
                 showBankAccountServiceMenu();
-                selectBankAccountServiceMenu();
+                if (selectBankAccountServiceMenu() == 1) break;
             }
         } else if (userServiceInput == 4) {
             System.out.println("고객 서비스를 종료합니다.");
@@ -79,27 +78,30 @@ public class ProgramController {
         System.out.println("실행할 메뉴를 선택해 주세요");
     }
 
-    private void selectBankAccountServiceMenu() {
-        while (true) {
-            int input = getUserInput();
-            if (input == 1) {
-                deposit();
-            } else if (input == 2) {
-                withdrawal();
-            } else if (input == 3) {
-                transfer();
-            } else if (input == 4) {
-                System.out.println("계좌 서비스를 종료합니다.");
-                break;
-            }
+    private int selectBankAccountServiceMenu() {
+        int input = getUserInput();
+        if (input == 1) {
+            deposit();
+        } else if (input == 2) {
+            withdrawal();
+        } else if (input == 3) {
+            transfer();
+        } else if (input == 4) {
+            System.out.println("계좌 서비스를 종료합니다.");
+            return 1;
         }
+        return 0;
     }
 
     private void withdrawal() {
+
     }
 
     private void deposit() {
         
+    }
+
+    private void transfer() {
     }
 
     private BankAccount createNewBankAccount() {
