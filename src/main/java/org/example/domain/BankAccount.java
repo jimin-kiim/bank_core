@@ -48,13 +48,17 @@ public class BankAccount {
         }
     }
 
-    public void decreaseBalance(int withdrawalAmount) {
+    public boolean decreaseBalance(int withdrawalAmount) {
         lock.lock();
         try {
             if (withdrawalAmount > balance) {
                 throw new IllegalArgumentException(ErrorMessage.LIMIT_EXCEEDED.getMessage());
             }
             this.balance -= withdrawalAmount;
+            return true;
+        } catch (IllegalArgumentException e) {
+            System.out.println("출금 실패: " + e.getMessage());
+            return false;
         } finally {
             lock.unlock(); // 반드시 해제해야 함
         }

@@ -173,19 +173,18 @@ public class ProgramController {
             System.out.println("이체를 취소합니다");
             return;
         }
-//        int balance = currentBankAccount.getBalance();
-//        if (remittanceAmount > balance) {
-//            System.out.println("잔액이 부족해 이체를 취소합니다.");
-//            return;
-//        }
+
         try {
             System.out.println("이체 중");
             Thread.sleep(2000);
-            Thread remmittance = new Thread(() -> currentBankAccount.decreaseBalance(remittanceAmount));
-            Thread remmittanceDestination = new Thread(() -> remittanceDestination.increaseBalance(remittanceAmount));
+//            Thread remmittance = new Thread(() -> currentBankAccount.decreaseBalance(remittanceAmount));
+//            Thread remmittanceDestination = new Thread(() -> remittanceDestination.increaseBalance(remittanceAmount));
 
-            remmittance.start();
-            remmittanceDestination.start();
+            if (currentBankAccount.decreaseBalance(remittanceAmount)) {
+                remittanceDestination.increaseBalance(remittanceAmount);
+            }
+//            remmittance.start();
+//            remmittanceDestination.start();
 
             System.out.println("이체 완료");
             System.out.println("이체 후 잔액: " + currentBankAccount.getBalance());
