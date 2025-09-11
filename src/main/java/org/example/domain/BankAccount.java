@@ -49,6 +49,9 @@ public class BankAccount {
     public void decreaseBalance(int withdrawalAmount) {
         lock.lock();
         try {
+            if (withdrawalAmount > balance) {
+                throw new IllegalArgumentException();
+            }
             this.balance -= withdrawalAmount;
         } finally {
             lock.unlock(); // 반드시 해제해야 함

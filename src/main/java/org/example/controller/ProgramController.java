@@ -123,10 +123,10 @@ public class ProgramController {
         System.out.println("출금할 금액을 입력해주세요.");
         int withdrawalAmount = getUserIntegerInput();
 
-        if (withdrawalAmount > balance) {
-            System.out.println("잔액이 부족해 출금 진행을 중단합니다.");
-            return;
-        }
+//        if (withdrawalAmount > balance) {
+//            System.out.println("잔액이 부족해 출금 진행을 중단합니다.");
+//            return;
+//        }
 
         try {
             System.out.println("출금 중");
@@ -156,29 +156,27 @@ public class ProgramController {
         System.out.println("==============================");
         System.out.println("송금할 계좌의 계좌 번호를 입력해주세요.");
         int bankAccountNumber = getUserIntegerInput();
-        BankAccount remittanceDestination = null;
-        for (BankAccount bankAccount: bankAccountList) {
-            if (bankAccount.getBankAccountNumber() == bankAccountNumber) {
-                remittanceDestination = bankAccount;
-                break;
-            }
-        }
+        BankAccount remittanceDestination = bankAccountList.stream().filter(bankAccount -> bankAccount.getBankAccountNumber() == bankAccountNumber).findFirst().orElse(null);
         if (remittanceDestination == null) {
             System.out.println("잘못된 계좌 번호로 이체를 취소합니다.");
             return;
         }
         System.out.println(bankAccountNumber + "으로 송금할 금액을 입력해주세요.");
         int remittanceAmount = getUserIntegerInput();
-        int balance = currentBankAccount.getBalance();
-        if (remittanceAmount > balance) {
-            System.out.println("잔액이 부족해 이체를 취소합니다.");
-            return;
-        }
+//        int balance = currentBankAccount.getBalance();
+//        if (remittanceAmount > balance) {
+//            System.out.println("잔액이 부족해 이체를 취소합니다.");
+//            return;
+//        }
         try {
             System.out.println("이체 중");
             Thread.sleep(2000);
-            remittanceDestination.increaseBalance(remittanceAmount);
-            currentBankAccount.decreaseBalance(remittanceAmount);
+            Thread remmittance = new Thread(() -> currentBankAccount.decreaseBalance(remittanceAmount));
+            Thread remmittanceDestination = new Thread(() -> remittanceDestination.increaseBalance(remittanceAmount));
+
+            remmittance.start();
+            remmittanceDestination.start();
+
             System.out.println("이체 완료");
             System.out.println("이체 후 잔액: " + currentBankAccount.getBalance());
         } catch (InterruptedException e) {
@@ -362,7 +360,7 @@ public class ProgramController {
         System.out.println("고객 이름을 입력해주세요");
         String name = getUserStringInput();
         System.out.println("고객 나이를 입력해주세요");
-        int age = getUserIntegerInput()
+        int age = getUserIntegerInput();
         customer.setName(name);
         customer.setAge(age);
         List<Customer> customerList = bank.getCustomerList();
