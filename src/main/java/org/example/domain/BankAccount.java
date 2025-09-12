@@ -10,6 +10,7 @@ public class BankAccount {
     private String alias;
     private int balance;
     private final Lock lock = new ReentrantLock();
+    private int paymentProcessCount = 0;
 
     public BankAccount(int bankAccountNumber) {
         this.bankAccountNumber = bankAccountNumber;
@@ -72,7 +73,8 @@ public class BankAccount {
             throw new RuntimeException(e);
         }
         if (decreaseBalance(price)) {
-            System.out.println(price + "원 결제 완료");
+            paymentProcessCount++;
+            System.out.println(paymentProcessCount + "번째 결제 "+ price + "원 결제 완료");
         }
     }
 }
