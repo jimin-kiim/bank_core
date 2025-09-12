@@ -130,22 +130,24 @@ public class ProgramController {
         payment2.start();
     }
 
+    private void delay(int delayTime) {
+        try {
+            Thread.sleep(delayTime);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     private void deposit() {
         System.out.println("==============================");
         System.out.println("보유 잔액: " + currentBankAccount.getBalance());
         System.out.println("입금할 금액을 입력해주세요.");
         int depositAmount = getUserIntegerInput();
-
-        try {
-            System.out.println("입금 중");
-            Thread.sleep(2000);
-            currentBankAccount.increaseBalance(depositAmount);
-            System.out.println(depositAmount +"원이 입금되었습니다.");
-            System.out.println("입금 후 잔액: " + currentBankAccount.getBalance());
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-        }
+        System.out.println("입금 중");
+        delay(2000);
+        currentBankAccount.increaseBalance(depositAmount);
+        System.out.println(depositAmount +"원이 입금되었습니다.");
+        System.out.println("입금 후 잔액: " + currentBankAccount.getBalance());
     }
 
     private void withdrawal() {
@@ -156,15 +158,11 @@ public class ProgramController {
         System.out.println("출금할 금액을 입력해주세요.");
         int withdrawalAmount = getUserIntegerInput();
 
-        try {
-            System.out.println("출금 중");
-            Thread.sleep(2000);
-            currentBankAccount.decreaseBalance(withdrawalAmount);
-            System.out.println(withdrawalAmount +"원이 출금되었습니다.");
-            System.out.println("출금 후 잔액: " + currentBankAccount.getBalance());
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-        }
+        System.out.println("출금 중");
+        delay(2000);
+        currentBankAccount.decreaseBalance(withdrawalAmount);
+        System.out.println(withdrawalAmount +"원이 출금되었습니다.");
+        System.out.println("출금 후 잔액: " + currentBankAccount.getBalance());
     }
 
 
@@ -202,19 +200,15 @@ public class ProgramController {
             return;
         }
 
-        try {
-            System.out.println("이체 중");
-            Thread.sleep(2000);
+        System.out.println("이체 중");
+        delay(2000);
 
-            if (currentBankAccount.decreaseBalance(remittanceAmount)) {
-                remittanceDestination.increaseBalance(remittanceAmount);
-            }
-
-            System.out.println("이체 완료");
-            System.out.println("이체 후 잔액: " + currentBankAccount.getBalance());
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
+        if (currentBankAccount.decreaseBalance(remittanceAmount)) {
+            remittanceDestination.increaseBalance(remittanceAmount);
         }
+
+        System.out.println("이체 완료");
+        System.out.println("이체 후 잔액: " + currentBankAccount.getBalance());
     }
 
     private BankAccount createNewBankAccount() {
