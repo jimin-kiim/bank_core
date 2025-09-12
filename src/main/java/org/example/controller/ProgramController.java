@@ -32,44 +32,60 @@ public class ProgramController {
     }
 
     private void executeMenu(int input) {
-        if (input == 1)  {
-            showCustomerList();
-        } else if (input == 2) {
-            createNewCustomer();
-        } else if (input == 3) {
-            chooseUser();
-            if (currentUser == null) return;
-            while (true) {
-                showUserServiceMenu();
-                if (selectUserServiceMenu() == 1) break;
-            }
+        switch (input) {
+            case 1:
+                showCustomerList();
+                break;
+            case 2:
+                createNewCustomer();
+                break;
+            case 3:
+                executeUserService();
+                break;
+        }
+    }
+
+    private void executeUserService() {
+        chooseUser();
+        if (currentUser == null) return;
+        while (true) {
+            showUserServiceMenu();
+            if (selectUserServiceMenu() == 1) break;
         }
     }
 
     private int selectUserServiceMenu() {
-        int userServiceInput = getUserIntegerInput();
-        if (userServiceInput == 1) {
-            BankAccount bankAccount = createNewBankAccount();
-            if (bankAccount != null) {
-                bank.addBankAccount(bankAccount);
-                currentUser.addNewBankAccount(bankAccount);
-            }
-            checkCreatedBankAccountInfo(bankAccount);
-        } else if (userServiceInput == 2) {
-            viewBankAccountList();
-        } else if (userServiceInput == 3) {
-            chooseBankAccount();
-            if (currentBankAccount == null) return 0;
-            while (true) {
-                showBankAccountServiceMenu();
-                if (selectBankAccountServiceMenu() == 1) break;
-            }
-        } else if (userServiceInput == 4) {
-            System.out.println("고객 서비스를 종료합니다.");
-            currentUser = null;
-            return 1;
+        int input = getUserIntegerInput();
+        switch (input) {
+            case 1:
+                createBankAccount();
+                break;
+            case 2:
+                viewBankAccountList();
+                break;
+            case 3:
+                chooseBankAccount();
+                if (currentBankAccount == null) return 0;
+                while (true) {
+                    showBankAccountServiceMenu();
+                    if (selectBankAccountServiceMenu() == 1) break;
+                }
+                break;
+            case 4:
+                System.out.println("고객 서비스를 종료합니다.");
+                currentUser = null;
+                return 1;
         }
         return 0;
+    }
+
+    private void createBankAccount() {
+        BankAccount bankAccount = createNewBankAccount();
+        if (bankAccount != null) {
+            bank.addBankAccount(bankAccount);
+            currentUser.addNewBankAccount(bankAccount);
+        }
+        checkCreatedBankAccountInfo(bankAccount);
     }
 
     private void showBankAccountServiceMenu() {
@@ -78,18 +94,23 @@ public class ProgramController {
 
     private int selectBankAccountServiceMenu() {
         int input = getUserIntegerInput();
-        if (input == 1) {
-            deposit();
-        } else if (input == 2) {
-            withdrawal();
-        } else if (input == 3) {
-            transfer();
-        } else if (input == 4) {
-            pay();
-        } else if (input == 5) {
-            System.out.println("계좌 서비스를 종료합니다.");
-            currentBankAccount = null;
-            return 1;
+        switch (input) {
+            case 1:
+                deposit();
+                break;
+            case 2:
+                withdrawal();
+                break;
+            case 3:
+                transfer();
+                break;
+            case 4:
+                pay();
+                break;
+            case 5:
+                System.out.println("계좌 서비스를 종료합니다.");
+                currentBankAccount = null;
+                return 1;
         }
         return 0;
     }
